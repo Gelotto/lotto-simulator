@@ -116,9 +116,9 @@ for t in range(n_rounds):
 
 # print out some stats
 for n, payout_list in payout_lists.items():
-    print(f'mean payout for {n}/{params["size"]} matches: {np.mean(payout_list)} GLTO')
-    print(f'min payout for {n}/{params["size"]} matches: {np.min(payout_list)} GLTO')
-    print(f'max payout for {n}/{params["size"]} matches: {np.max(payout_list)} GLTO')
+    print(f'mean payout for {n}/{params["n"]} matches: {np.mean(payout_list)} GLTO')
+    print(f'min payout for {n}/{params["n"]} matches: {np.min(payout_list)} GLTO')
+    print(f'max payout for {n}/{params["n"]} matches: {np.max(payout_list)} GLTO')
     print()
 
 # graph it
