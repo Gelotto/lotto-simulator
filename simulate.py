@@ -47,7 +47,9 @@ def draw():
 
 # for each round...
 for t in range(n_rounds):
+    print(f'Round {t + 1}')
     n_users = random.randint(params['min_users'], params['max_users'])
+    n_users = max(params['min_users'], int(min(params['max_users'], n_users * ((t+1) / n_rounds)**1.5)))
     tickets = []
 
     # simulate each user buying some tickets.
@@ -76,6 +78,7 @@ for t in range(n_rounds):
         for k, v in steps.items()
     }
 
+    visited_pcts = set()
     winning_numbers = draw()  # winning numbers for the round
     payout = 0  # running total payout for the round
 
@@ -89,7 +92,8 @@ for t in range(n_rounds):
             payout += computed_payouts.get(n, 0)
             ticket_payout += computed_payouts.get(n, 0)
 
-        if n in pcts:
+        if n in pcts and n not in visited_pcts:
+            visited_pcts.add(n)
             pct = pcts[n]
             amount = pct * balance
             tax_amount = amount * 0.05
