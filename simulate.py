@@ -34,6 +34,7 @@ balance = 0
 y_balance = []
 y_payout = []
 y_tax = []
+y_users = []
 
 # map from winning match counts to lists of payouts,
 # aggregated across all rounds of the sim, used for stats
@@ -48,9 +49,12 @@ def draw():
 # for each round...
 for t in range(n_rounds):
     print(f'Round {t + 1}')
-    n_users = random.randint(params['min_users'], params['max_users'])
-    n_users = max(params['min_users'], int(min(params['max_users'], n_users * ((t+1) / n_rounds)**1.5)))
     tickets = []
+
+    n_users = random.randint(
+        params['min_users'], 
+        min(params['max_users'], int(params['min_users'] + (params['max_users'] - params['min_users']) * (t / n_rounds)**1.2))
+    )
 
     # simulate each user buying some tickets.
     # note that tickets are unique per user
@@ -116,6 +120,7 @@ for t in range(n_rounds):
     y_payout.append(payout)
     y_balance.append(balance)
     y_tax.append(tax)
+    y_users.append(n_users)
 
 
 # print out some stats
@@ -131,6 +136,7 @@ x = np.arange(len(y_balance))
 pp.plot(x, y_balance, label="Pot Size")
 pp.plot(x, y_payout, label="Total Payout")
 pp.plot(x, y_tax, label="House Revenue")
+pp.plot(x, y_users, label="User Count")
 pp.ylabel("GLTO")
 pp.xlabel("Lotto Round")
 pp.legend()
