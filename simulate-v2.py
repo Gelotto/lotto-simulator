@@ -11,7 +11,6 @@ from collections import defaultdict
 
 from matplotlib import pyplot as pp
 
-
 if len(sys.argv) > 2:
     random = Random(int(sys.argv[2]))
 else:
@@ -25,7 +24,6 @@ all_numbers = list(range(params['min'], params['max'] + 1))
 steps = {int(k): v for k, v in params['payout_step_sizes'].items()}
 pcts = {int(k): v for k, v in params['payout_pot_percents'].items()}
 step_up_ticket_count = params['step_up_ticket_count']
-house_takes_leftovers = params.get('house_takes_leftovers', False)
 price = params['price']
 min_pot = params['min_pot']
 n_rounds = params['rounds']
@@ -61,13 +59,11 @@ for t in range(n_rounds):
 
     n_users = random.randint(
         params['min_users'], 
-        int(params['min_users'] + (1 / (1 + math.exp(-(100 * (t/2+1)/n_rounds) **0.4 + 2))) * (params['max_users'] - params['min_users']))
+        min(
+            params['max_users'], 
+            int(params['min_users'] + (params['max_users'] - params['min_users']) * (t / n_rounds)**1.2)
+        )
     )
-
-    if params['min_users'] < 0.5 * params['max_users']:
-        params['min_users'] = int(params['min_users'] * 1.02)
-
-    print('n_users', n_users)
 
     # simulate each user buying some tickets.
     # note that tickets are unique per user
@@ -100,41 +96,42 @@ for t in range(n_rounds):
 
     visited_pcts = set()
     winning_numbers = draw()  # winning numbers for the round
-    payout = 0  # running total payout for the round
+    payout1 = 0
 
     # now find winners and compute round's payout, adjust
     # house_revenuees if need be, and update remaining balance
     for i, ticket_numbers in enumerate(tickets):
         ticket_payout = 0
         n = len(ticket_numbers & winning_numbers)
-
         if n in computed_payouts:
-            payout += computed_payouts.get(n, 0)
+            payout1 += computed_payouts.get(n, 0)
             ticket_payout += computed_payouts.get(n, 0)
+        #payout_lists[n].append(ticket_payout)
 
+    balance_after_fixed_payouts = balance - payout1
+    payout2 = 0
+
+    for i, ticket_numbers in enumerate(tickets):
+        ticket_payout = 0
+        n = len(ticket_numbers & winning_numbers)
         if n in pcts and n not in visited_pcts:
-            amount = pcts[n] * balance
+            amount = pcts[n] * balance_after_fixed_payouts
             house_revenue_amount = amount * 0.05
             post_house_amount = amount - house_revenue_amount
             house_revenue += house_revenue_amount
-            payout += amount
+            payout2 += amount
             ticket_payout += post_house_amount
             visited_pcts.add(n)
-
-        if ticket_payout:
-            payout_lists[n].append(ticket_payout)
+        #payout_lists[n].append(ticket_payout)
 
     # update session balance
+    payout = payout1 + payout2
     balance -= payout
 
     if balance < min_pot:
         delta = min_pot - balance
         balance += delta
         house_revenue -= delta
-    elif house_takes_leftovers:
-        delta = balance - min_pot
-        house_revenue += delta
-        balance -= delta
 
     y_payout.append(payout)
     y_balance.append(balance)
@@ -143,11 +140,11 @@ for t in range(n_rounds):
 
 
 # print out some stats
-for n, payout_list in payout_lists.items():
-    print(f'mean payout for {n}/{params["n"]} matches: {np.mean(payout_list)} GLTO')
-    print(f'min payout for {n}/{params["n"]} matches: {np.min(payout_list)} GLTO')
-    print(f'max payout for {n}/{params["n"]} matches: {np.max(payout_list)} GLTO')
-    print()
+#for n, payout_list in payout_lists.items():
+#    print(f'mean payout for {n}/{params["n"]} matches: {np.mean(payout_list)} GLTO')
+#    print(f'min payout for {n}/{params["n"]} matches: {np.min(payout_list)} GLTO')
+#    print(f'max payout for {n}/{params["n"]} matches: {np.max(payout_list)} GLTO')
+#    print()
 
 # graph it
 x = np.arange(len(y_balance))
