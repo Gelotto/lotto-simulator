@@ -67,8 +67,6 @@ for t in range(n_rounds):
     if params['min_users'] < 0.5 * params['max_users']:
         params['min_users'] = int(params['min_users'] * 1.02)
 
-    print('n_users', n_users)
-
     # simulate each user buying some tickets.
     # note that tickets are unique per user
     for i in range(n_users):
