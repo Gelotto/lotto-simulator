@@ -22,8 +22,8 @@ with open(sys.argv[1]) as fin:
     params = yaml.load(fin, Loader=yaml.CLoader)
 
 all_numbers = list(range(params['min'], params['max'] + 1))
-steps = {int(k): v for k, v in params['payout_step_sizes'].items()}
-pcts = {int(k): v for k, v in params['payout_pot_percents'].items()}
+steps = {int(k): v for k, v in (params.get('payout_step_sizes') or {}).items()}
+pcts = {int(k): v for k, v in (params.get('payout_pot_percents') or {}).items()}
 step_up_ticket_count = params['step_up_ticket_count']
 house_takes_leftovers = params.get('house_takes_leftovers', False)
 price = params['price']
@@ -41,6 +41,8 @@ y_balance = []
 y_payout = []
 y_house_revenue = []
 y_users = []
+
+max_ticket_count = math.comb(len(all_numbers), params['n'])
 
 # map from winning match counts to lists of payouts,
 # aggregated across all rounds of the sim, used for stats
@@ -77,10 +79,11 @@ for t in range(n_rounds):
 
         ticket_group = {}
 
-        while len(ticket_group) < n_user_tickets:
+        while len(ticket_group) < min(n_user_tickets, max_ticket_count):
             ticket_numbers = draw()
             ticket_hash = ':'.join(str(x) for x in sorted(list(ticket_numbers)))
-            ticket_group[ticket_hash] = ticket_numbers
+            if ticket_hash not in ticket_group:
+                ticket_group[ticket_hash] = ticket_numbers
 
         tickets.extend(ticket_group.values())
 
