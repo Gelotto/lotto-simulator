@@ -32,7 +32,7 @@ step_up_ticket_count: 1000000
 # with the winning numbers receives 300 minimum. If the ticket count increases
 # by a sufficient amount, however, it becomes 600.
 payout_step_sizes:
-    2: 1
+    2: 60
     3: 20000
 
 
