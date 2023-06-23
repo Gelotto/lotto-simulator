@@ -20,7 +20,7 @@ min_pot: 500000
 
 # the number of additional tickets needed to step up payout amounts (by the
 # amounts defined in `payout_step_sizes`):
-step_up_ticket_count: 1000000
+step_up_ticket_count: 100000000000000
 
 
 # payout_step_sizes associates possible match counts that a winning ticket can
@@ -32,9 +32,9 @@ step_up_ticket_count: 1000000
 # with the winning numbers receives 300 minimum. If the ticket count increases
 # by a sufficient amount, however, it becomes 600.
 payout_step_sizes:
-    2: 1
-    3: 2500
-    4: 125000
+    2: 100
+    3: 1000
+    4: 100000
 
 
 # similar to payout_step_sizes; however, the right-hand side in
@@ -44,23 +44,27 @@ payout_step_sizes:
 # balance of the lotto go negative, the house pays the difference and backfills
 # the lotto until it's balance is the value defined by `min_pot`.
 payout_pot_percents:
-    5: .80
+    5: .75
 
 
 ## Simulation Settings -----------------------------------------------------
 ## -------------------------------------------------------------------------
 
 # How many lotto rounds should be simulated:
-rounds: 100
+rounds: 60
 
 
 # lower and upper bounds for the randomness that determines the number of
 # wallets that buy tickets each round:
-min_users: 100
-max_users: 200
+min_users: 1000
+max_users: 2000
 
 
 # lower and upper bounds for the randomness that determines the number of
 # tickets each user buys in each round:
 min_tickets_per_user: 1
-max_tickets_per_user: 100
+max_tickets_per_user: 50
+
+# if true, then anything left in the lotto's balance, minus the min pot size,
+# will be transfered to the house at the end of each round.
+house_takes_leftovers: false
