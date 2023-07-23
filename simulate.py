@@ -21,14 +21,14 @@ else:
 with open(sys.argv[1]) as fin:
     params = yaml.load(fin, Loader=yaml.CLoader)
 
-all_numbers = list(range(params['min'], params['max'] + 1))
-steps = {int(k): v for k, v in (params.get('payout_step_sizes') or {}).items()}
-pcts = {int(k): v for k, v in (params.get('payout_pot_percents') or {}).items()}
-step_up_ticket_count = params['step_up_ticket_count']
-house_takes_leftovers = params.get('house_takes_leftovers', False)
-price = params['price']
-min_pot = params['min_pot']
-n_rounds = params['rounds']
+all_numbers = list(range(params["min"], params["max"] + 1))
+steps = {int(k): v for k, v in (params.get("payout_step_sizes") or {}).items()}
+pcts = {int(k): v for k, v in (params.get("payout_pot_percents") or {}).items()}
+step_up_ticket_count = params["step_up_ticket_count"]
+house_takes_leftovers = params.get("house_takes_leftovers", False)
+price = params["price"]
+min_pot = params["min_pot"]
+n_rounds = params["rounds"]
 
 # running total house_revenue
 house_revenue = 0
@@ -42,7 +42,7 @@ y_payout = []
 y_house_revenue = []
 y_users = []
 
-max_ticket_count = math.comb(len(all_numbers), params['n'])
+max_ticket_count = math.comb(len(all_numbers), params["n"])
 
 # map from winning match counts to lists of payouts,
 # aggregated across all rounds of the sim, used for stats
@@ -51,37 +51,40 @@ payout_lists = defaultdict(list)
 
 def draw():
     nums = set()
-    while len(nums) < params['n']:
+    while len(nums) < params["n"]:
         nums.add(random.choice(all_numbers))
     return nums
 
 
 # for each round...
 for t in range(n_rounds):
-    print(f'Round {t + 1}')
+    print(f"Round {t + 1}")
     tickets = []
 
     n_users = random.randint(
-        params['min_users'], 
-        int(params['min_users'] + (1 / (1 + math.exp(-(100 * (t/2+1)/n_rounds) **0.4 + 2))) * (params['max_users'] - params['min_users']))
+        params["min_users"],
+        int(
+            params["min_users"]
+            + (1 / (1 + math.exp(-((100 * (t / 2 + 1) / n_rounds) ** 0.4) + 2)))
+            * (params["max_users"] - params["min_users"])
+        ),
     )
 
-    if params['min_users'] < 0.5 * params['max_users']:
-        params['min_users'] = int(params['min_users'] * 1.02)
+    if params["min_users"] < 0.5 * params["max_users"]:
+        params["min_users"] = int(params["min_users"] * 1.02)
 
     # simulate each user buying some tickets.
     # note that tickets are unique per user
     for i in range(n_users):
         n_user_tickets = random.randint(
-            params['min_tickets_per_user'], 
-            params['max_tickets_per_user']
+            params["min_tickets_per_user"], params["max_tickets_per_user"]
         )
 
         ticket_group = {}
 
         while len(ticket_group) < min(n_user_tickets, max_ticket_count):
             ticket_numbers = draw()
-            ticket_hash = ':'.join(str(x) for x in sorted(list(ticket_numbers)))
+            ticket_hash = ":".join(str(x) for x in sorted(list(ticket_numbers)))
             if ticket_hash not in ticket_group:
                 ticket_group[ticket_hash] = ticket_numbers
 
@@ -95,7 +98,7 @@ for t in range(n_rounds):
     # destined for NFT holders, etc.
 
     computed_payouts = {
-        k: max(price, v * (math.log2(n_tickets/step_up_ticket_count + 1) + 1)**1.5) 
+        k: max(price, v * (math.log2(n_tickets / step_up_ticket_count + 1) + 1) ** 1.5)
         for k, v in steps.items()
     }
 
@@ -144,11 +147,18 @@ for t in range(n_rounds):
 
 
 # print out some stats
+display_data = {}
 for n, payout_list in payout_lists.items():
-    print(f'mean payout for {n}/{params["n"]} matches: {np.mean(payout_list)} GLTO')
-    print(f'min payout for {n}/{params["n"]} matches: {np.min(payout_list)} GLTO')
-    print(f'max payout for {n}/{params["n"]} matches: {np.max(payout_list)} GLTO')
-    print()
+    values = np.array(payout_list)
+    display_data[n] = {
+        "mean": round(values.mean()),
+        "min": round(values.min()),
+        "max": round(values.max()),
+        "std": round(values.std()),
+    }
+
+print(json.dumps(display_data, indent=2))
+
 
 # graph it
 x = np.arange(len(y_balance))
@@ -156,7 +166,7 @@ x = np.arange(len(y_balance))
 pp.plot(x, y_balance, label="Pot Size")
 pp.plot(x, y_payout, label="Total Payout")
 pp.plot(x, y_house_revenue, label="House Revenue")
-#pp.plot(x, y_users, label="User Count")
+# pp.plot(x, y_users, label="User Count")
 pp.ylabel("GLTO")
 pp.xlabel("Lotto Round")
 pp.legend()
