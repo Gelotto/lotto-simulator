@@ -38,7 +38,7 @@ payout_step_sizes:
 # balance of the lotto go negative, the house pays the difference and backfills
 # the lotto until it's balance is the value defined by `min_pot`.
 payout_pot_percents:
-  4: .80
+  4: .70
 
 ## Simulation Settings -----------------------------------------------------
 ## -------------------------------------------------------------------------
