@@ -13,7 +13,7 @@ price: 50
 
 # minimum balance to keep in the pot at all times, which is back-filled by the
 # house when it drops below 0:
-min_pot: 80000
+min_pot: 0
 
 # the number of additional tickets needed to step up payout amounts (by the
 # amounts defined in `payout_step_sizes`):

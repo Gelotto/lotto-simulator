@@ -103,6 +103,7 @@ for t in range(n_rounds):
     }
 
     visited_pcts = set()
+    match_counts = defaultdict(int)
     winning_numbers = draw()  # winning numbers for the round
     payout = 0  # running total payout for the round
 
@@ -111,6 +112,7 @@ for t in range(n_rounds):
     for i, ticket_numbers in enumerate(tickets):
         ticket_payout = 0
         n = len(ticket_numbers & winning_numbers)
+        match_counts[n] += 1
 
         if n in computed_payouts:
             payout += computed_payouts.get(n, 0)
@@ -130,6 +132,8 @@ for t in range(n_rounds):
 
     # update session balance
     balance -= payout
+
+    print(dict(match_counts))
 
     if balance < min_pot:
         delta = min_pot - balance
