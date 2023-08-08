@@ -167,9 +167,9 @@ print(json.dumps(display_data, indent=2))
 # graph it
 x = np.arange(len(y_balance))
 
-pp.plot(x, y_balance, label="Pot Size")
-pp.plot(x, y_payout, label="Total Payout")
-pp.plot(x, y_house_revenue, label="House Revenue")
+pp.plot(x, y_balance, label="Pot Size", linewidth=1)
+pp.plot(x, y_payout, label="Total Payout", linewidth=1)
+pp.plot(x, y_house_revenue, label="House Revenue", linewidth=1)
 # pp.plot(x, y_users, label="User Count")
 pp.ylabel("GLTO")
 pp.xlabel("Lotto Round")
