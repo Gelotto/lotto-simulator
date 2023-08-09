@@ -2,14 +2,14 @@
 ## -------------------------------------------------------------------------
 
 # the number of numbers in a ticket:
-n: 2
+n: 5
 
 # the smallest and largest possible values for numbers:
 min: 0
-max: 33
+max: 43
 
 # price of a ticket:
-price: 500
+price: 10
 
 # minimum balance to keep in the pot at all times, which is back-filled by the
 # house when it drops below 0:
@@ -17,7 +17,7 @@ min_pot: 0
 
 # the number of additional tickets needed to step up payout amounts (by the
 # amounts defined in `payout_step_sizes`):
-step_up_ticket_count: 10000000000
+step_up_ticket_count: 100000000000
 
 # payout_step_sizes associates possible match counts that a winning ticket can
 # have with an "payout step-up" amount. Each time that the number of tickets
@@ -28,8 +28,7 @@ step_up_ticket_count: 10000000000
 # with the winning numbers receives 300 minimum. If the ticket count increases
 # by a sufficient amount, however, it becomes 600.
 payout_step_sizes:
-  1: 20
-  2: 5000
+  5: 1000000
 
 # similar to payout_step_sizes; however, the right-hand side in
 # `payout_pot_percents` represents a percentage of the pot that should be paid
@@ -38,25 +37,24 @@ payout_step_sizes:
 # balance of the lotto go negative, the house pays the difference and backfills
 # the lotto until it's balance is the value defined by `min_pot`.
 payout_pot_percents:
-  1: 0
-  2: 0.3
+  5: 0.25
 
 ## Simulation Settings -----------------------------------------------------
 ## -------------------------------------------------------------------------
 
 # How many lotto rounds should be simulated:
-rounds: 100
+rounds: 250
 
 # lower and upper bounds for the randomness that determines the number of
 # wallets that buy tickets each round:
 min_users: 50
-max_users: 2500
+max_users: 100
 
 # lower and upper bounds for the randomness that determines the number of
 # tickets each user buys in each round:
 min_tickets_per_user: 1
-max_tickets_per_user: 20
+max_tickets_per_user: 300
 
-# if true, then anything left in the lotto's balance, minus the min pot size,
-# will be transfered to the house at the end of each round.
-house_takes_leftovers: true
+house_take_pct: 0.05
+
+house_takes_leftovers: false
