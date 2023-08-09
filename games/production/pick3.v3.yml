@@ -1,0 +1,24 @@
+# Intended to be a fast faced game with frequent draws
+
+## Lotto Settings ----------------------------------------------------------
+n: 3
+min: 0
+max: 20
+price: 250
+min_pot: 60000
+house_take_pct: 0.0
+house_takes_leftovers: false
+payout_incentives:
+  1: 50
+  2: 1500
+payout_pot_percents:
+  3: 0.75
+
+## Simulation Settings -----------------------------------------------------
+rounds: 400
+
+min_users: 1
+max_users: 10
+
+min_tickets_per_user: 1
+max_tickets_per_user: 50

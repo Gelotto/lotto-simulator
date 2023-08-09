@@ -6,27 +6,30 @@ import numpy as np
 import yaml
 
 from math import comb
-from random import Random
+from random import randint, Random
 from collections import defaultdict
 
 from matplotlib import pyplot as pp
 
 
 if len(sys.argv) > 2:
-    random = Random(int(sys.argv[2]))
+    seed = int(sys.argv[2])
 else:
-    random = Random()
+    seed = randint(1, (1 << 32) - 1)
+
+random = Random(seed)
 
 # open path to YAML config file
 with open(sys.argv[1]) as fin:
     params = yaml.load(fin, Loader=yaml.CLoader)
 
-all_numbers = list(range(params["min"], params["max"] + 1))
-steps = {int(k): v for k, v in (params.get("payout_step_sizes") or {}).items()}
-pcts = {int(k): v for k, v in (params.get("payout_pot_percents") or {}).items()}
-step_up_ticket_count = params["step_up_ticket_count"]
-house_take_pct = params.get("house_take_pct", 0.0)
 price = params["price"]
+all_numbers = list(range(params["min"], params["max"] + 1))
+payout_incentives = {
+    int(k): v for k, v in (params.get("payout_incentives") or {}).items() if v
+}
+payout_pcts = {int(k): v for k, v in (params.get("payout_pot_percents") or {}).items()}
+house_take_pct = params.get("house_take_pct", 0.0)
 min_pot = params["min_pot"]
 n_rounds = params["rounds"]
 
@@ -34,7 +37,7 @@ n_rounds = params["rounds"]
 house_revenue = 0
 
 # running lotto balance (the pot), updated with each round
-balance = min_pot
+balance = min_pot + params.get("starting_pot", 0)
 
 # init various time series for graphing
 y_balance = []
@@ -91,16 +94,11 @@ for t in range(n_rounds):
         tickets.extend(ticket_group.values())
 
     n_tickets = len(tickets)
-    balance += (n_tickets * price) * 0.9
+    balance += (n_tickets * price) * 0.95
     house_revenue += (n_tickets * price) * 0.05
 
     # NOTE: The total pct above is 95%. The missing 5% is not shown but is
     # destined for NFT holders, etc.
-
-    computed_payouts = {
-        k: max(price, v * (math.log2(n_tickets / step_up_ticket_count + 1) + 1) ** 1.5)
-        for k, v in steps.items()
-    }
 
     visited_pcts = set()
     match_counts = defaultdict(int)
@@ -119,12 +117,12 @@ for t in range(n_rounds):
         n = len(ticket_numbers & winning_numbers)
         match_counts[n] += 1
 
-        if n in computed_payouts:
-            payout += computed_payouts.get(n, 0)
-            ticket_payout += computed_payouts.get(n, 0)
+        if n in payout_incentives:
+            payout += payout_incentives.get(n, 0)
+            ticket_payout += payout_incentives.get(n, 0)
 
-        if n in pcts and n not in visited_pcts:
-            amount = pcts[n] * balance
+        if n in payout_pcts and n not in visited_pcts:
+            amount = payout_pcts[n] * balance
             if not house_take_pct:
                 house_revenue_amount = amount * 0.10
             else:
@@ -170,7 +168,7 @@ for n, payout_list in payout_lists.items():
     }
 
 print(json.dumps(display_data, indent=2))
-
+print("seed", seed)
 
 # graph it
 x = np.arange(len(y_balance))

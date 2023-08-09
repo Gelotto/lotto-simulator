@@ -1,0 +1,22 @@
+## Lotto Settings ----------------------------------------------------------
+n: 5
+min: 0
+max: 43
+price: 10
+min_pot: 0
+starting_pot: 1000000
+house_take_pct: 0.0
+house_takes_leftovers: true
+payout_incentives:
+  5: 1000000
+payout_pot_percents:
+  5: 0
+
+## Simulation Settings -----------------------------------------------------
+rounds: 1000
+
+min_users: 1
+max_users: 10
+
+min_tickets_per_user: 1
+max_tickets_per_user: 100
