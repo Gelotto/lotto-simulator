@@ -25,7 +25,7 @@ all_numbers = list(range(params["min"], params["max"] + 1))
 steps = {int(k): v for k, v in (params.get("payout_step_sizes") or {}).items()}
 pcts = {int(k): v for k, v in (params.get("payout_pot_percents") or {}).items()}
 step_up_ticket_count = params["step_up_ticket_count"]
-house_takes_leftovers = params.get("house_takes_leftovers", False)
+house_take_pct = params.get("house_take_pct", 0.0)
 price = params["price"]
 min_pot = params["min_pot"]
 n_rounds = params["rounds"]
@@ -34,7 +34,7 @@ n_rounds = params["rounds"]
 house_revenue = 0
 
 # running lotto balance (the pot), updated with each round
-balance = 0
+balance = min_pot
 
 # init various time series for graphing
 y_balance = []
@@ -107,6 +107,11 @@ for t in range(n_rounds):
     winning_numbers = draw()  # winning numbers for the round
     payout = 0  # running total payout for the round
 
+    if house_take_pct:
+        delta = balance * house_take_pct
+        house_revenue += delta
+        balance -= delta
+
     # now find winners and compute round's payout, adjust
     # house_revenuees if need be, and update remaining balance
     for i, ticket_numbers in enumerate(tickets):
@@ -120,7 +125,10 @@ for t in range(n_rounds):
 
         if n in pcts and n not in visited_pcts:
             amount = pcts[n] * balance
-            house_revenue_amount = amount * 0.05
+            if not house_take_pct:
+                house_revenue_amount = amount * 0.10
+            else:
+                house_revenue_amount = 0
             post_house_amount = amount - house_revenue_amount
             house_revenue += house_revenue_amount
             payout += amount
@@ -139,10 +147,10 @@ for t in range(n_rounds):
         delta = min_pot - balance
         balance += delta
         house_revenue -= delta
-    elif house_takes_leftovers:
+    elif params.get("house_takes_leftovers", False):
         delta = balance - min_pot
-        house_revenue += delta
         balance -= delta
+        house_revenue += delta
 
     y_payout.append(payout)
     y_balance.append(balance)
@@ -167,9 +175,9 @@ print(json.dumps(display_data, indent=2))
 # graph it
 x = np.arange(len(y_balance))
 
-pp.plot(x, y_balance, label="Pot Size", linewidth=1)
-pp.plot(x, y_payout, label="Total Payout", linewidth=1)
-pp.plot(x, y_house_revenue, label="House Revenue", linewidth=1)
+pp.plot(x, y_balance, label="Pot Size", linewidth=0.5)
+pp.plot(x, y_payout, label="Total Payout", linewidth=0.5)
+pp.plot(x, y_house_revenue, label="House Revenue", linewidth=0.5)
 # pp.plot(x, y_users, label="User Count")
 pp.ylabel("GLTO")
 pp.xlabel("Lotto Round")

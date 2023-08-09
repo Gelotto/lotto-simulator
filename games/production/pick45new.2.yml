@@ -37,23 +37,24 @@ payout_step_sizes:
 # balance of the lotto go negative, the house pays the difference and backfills
 # the lotto until it's balance is the value defined by `min_pot`.
 payout_pot_percents:
+  5: 0.25
 
 ## Simulation Settings -----------------------------------------------------
 ## -------------------------------------------------------------------------
 
 # How many lotto rounds should be simulated:
-rounds: 500
+rounds: 250
 
 # lower and upper bounds for the randomness that determines the number of
 # wallets that buy tickets each round:
 min_users: 50
-max_users: 150
+max_users: 100
 
 # lower and upper bounds for the randomness that determines the number of
 # tickets each user buys in each round:
 min_tickets_per_user: 1
-max_tickets_per_user: 250
+max_tickets_per_user: 300
 
-# if true, then anything left in the lotto's balance, minus the min pot size,
-# will be transfered to the house at the end of each round.
-house_takes_leftovers: true
+house_take_pct: 0.05
+
+house_takes_leftovers: false
