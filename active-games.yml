@@ -1,0 +1,10 @@
+short:
+    - pick1.v1.yml
+    - pick3.v3.yml
+    - pick2.v3.yml
+    - pick5.v3.yml
+long:
+    - pick2.v2.yml
+    - pick3.v2.yml
+    - pick4.v1.yml
+    - pick5.v1.yml
