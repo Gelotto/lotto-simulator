@@ -37,7 +37,7 @@ n_rounds = params["rounds"]
 house_revenue = 0
 
 # running lotto balance (the pot), updated with each round
-balance = min_pot
+balance = min_pot + params.get("starting_pot", 0)
 
 # init various time series for graphing
 y_balance = []
