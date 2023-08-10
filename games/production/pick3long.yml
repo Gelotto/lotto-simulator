@@ -13,7 +13,7 @@ price: 5
 
 # minimum balance to keep in the pot at all times, which is back-filled by the
 # house when it drops below 0:
-min_pot: 10000
+min_pot: 50000
 
 # the number of additional tickets needed to step up payout amounts (by the
 # amounts defined in `payout_step_sizes`):
@@ -28,7 +28,7 @@ step_up_ticket_count: 10000000000
 # with the winning numbers receives 300 minimum. If the ticket count increases
 # by a sufficient amount, however, it becomes 600.
 payout_step_sizes:
-  2: 5
+ 
 
 
 # similar to payout_step_sizes; however, the right-hand side in
@@ -56,7 +56,7 @@ max_users: 100
 min_tickets_per_user: 1
 max_tickets_per_user: 250
 
-house_take_pct: 
+house_take_pct: 0.1
 
 # if true, then anything left in the lotto's balance, minus the min pot size,
 # will be transfered to the house at the end of each round.
