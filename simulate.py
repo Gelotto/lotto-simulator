@@ -83,15 +83,12 @@ for t in range(n_rounds):
             params["min_tickets_per_user"], params["max_tickets_per_user"]
         )
 
-        ticket_group = {}
-
-        while len(ticket_group) < min(n_user_tickets, max_ticket_count):
+        player_tickets = []
+        while len(player_tickets) < min(n_user_tickets, max_ticket_count):
             ticket_numbers = draw()
-            ticket_hash = ":".join(str(x) for x in sorted(list(ticket_numbers)))
-            if ticket_hash not in ticket_group:
-                ticket_group[ticket_hash] = ticket_numbers
+            player_tickets.append(ticket_numbers)
 
-        tickets.extend(ticket_group.values())
+        tickets.extend(player_tickets)
 
     n_tickets = len(tickets)
     balance += (n_tickets * price) * 0.95
