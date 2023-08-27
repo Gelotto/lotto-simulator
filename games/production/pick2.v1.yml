@@ -6,7 +6,7 @@ n: 2
 
 # the smallest and largest possible values for numbers:
 min: 0
-max: 33
+max: 10
 
 # price of a ticket:
 price: 500
