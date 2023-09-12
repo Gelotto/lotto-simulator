@@ -6,35 +6,34 @@ n: 4
 
 # the smallest and largest possible values for numbers:
 min: 0
-max: 43
+max: 20
 
 # price of a ticket:
-price: 50
+price: 0.025
 
 # minimum balance to keep in the pot at all times, which is back-filled by the
 # house when it drops below 0:
-min_pot: 100000
+min_pot: 100
 
 payout_incentives:
-  2: 1
   
-
-payout_pot_percents:
-  3: .025
-  4: .80
+payout_pot_percents: 
+  3: .20
+  4: .50
+  
 
 ## Simulation Settings -----------------------------------------------------
 ## -------------------------------------------------------------------------
 
 # How many lotto rounds should be simulated:
-rounds: 300
+rounds: 30
 
 # lower and upper bounds for the randomness that determines the number of
 # wallets that buy tickets each round:
-min_users: 50
-max_users: 100
+min_users: 500
+max_users: 1000
 
 # lower and upper bounds for the randomness that determines the number of
 # tickets each user buys in each round:
-min_tickets_per_user: 20
-max_tickets_per_user: 200
+min_tickets_per_user: 1
+max_tickets_per_user: 25
